@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(RPG)
+project(Arboris)
 
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/)
 
@@ -32,6 +32,8 @@ set(INC
 	${SRCROOT}/InputMapping.hpp
 	${SRCROOT}/Tilemap.hpp
 	${SRCROOT}/Events.hpp
+	${SRCROOT}/DataParser.hpp
+	${SRCROOT}/MenuManager.hpp
 )
 
 # application source files
@@ -58,18 +60,20 @@ set(SRC
 	${SRCROOT}/tinyxml2.cpp
 	${SRCROOT}/tmxparser.cpp
 	${SRCROOT}/Tilemap.cpp
+	${SRCROOT}/DataParser.cpp
+	${SRCROOT}/MenuManager.cpp
 )
 
 find_package(GExL REQUIRED)
 find_package(SFML 2 COMPONENTS graphics audio window system main) 
 find_package (entityx REQUIRED)
-
-include_directories(${ENTITYX_INCLUDE_DIR} ${GExL_INCLUDE_DIR} ${SFML_INCLUDE_DIR} )
+find_package (TGUI 0.7 REQUIRED)
+include_directories(${ENTITYX_INCLUDE_DIR} ${GExL_INCLUDE_DIR} ${SFML_INCLUDE_DIR}  ${TGUI_INCLUDE_DIR} )
 
 add_executable(${PROJECT_NAME}
                 ${SRC} ${INC})
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SFML_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SFML_LIBRARIES} ${TGUI_LIBRARY})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} optimized ${ENTITYX_LIBRARY} optimized ${GExL_LIBRARY})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} debug ${ENTITYX_LIBRARY_DEBUG} debug ${GExL_DEBUG_LIBRARY})
 

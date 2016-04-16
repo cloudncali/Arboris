@@ -39,6 +39,7 @@ public:
     
   }
 };
+
 typedef sf::Transformable EntityTransformable;
 
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<character>
+	<physical>      
+	  <name>Mage</name>
+		<condition> 100.0 </condition>
+		<toughness> 3.0 </toughness>
+		<blocking> true </blocking>
+		<weight> 1.0 </weight>
+		<size> 1</size>
+		<destroyed> false </destroyed>
+	</physical>
+	<alive>
+		<health>100.0f</health>
+		<energy>100.0f</energy>
+		<behavior>wander</behavior>
+		<stats>
+			<phys>1 </phys>
+			<intel> 4 </intel>
+			<wit>3</wit>
+			<luck>2</luck>
+		</stats>
+		<skills>
+			<combat>1 </combat>
+			<stealth> 1 </stealth>
+			<reflex>1</reflex>
+			<strength>1</strength>
+			<fortitude>1</fortitude>
+			<magic>3</magic>
+			<lore>1</lore>
+			<willpower>1</willpower>
+			<charisma>1</charisma>
+			<craft>1</craft>
+			<perception>1</perception>
+		</skills>
+	</alive>
+	<mobile>
+		<type>bi</type>
+		<speed>1</speed>
+	</mobile>
+	<render>
+		<texture>resources/Images/CharacterTiles.png </texture>
+		<index> 1 </index>
+	</render>
+</character>
+	

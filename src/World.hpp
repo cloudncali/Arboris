@@ -16,7 +16,7 @@ public:
 	void update(entityx::TimeDelta dt);
 
 	void render();
-
+  entityx::Entity CreatLabel(GExL::Int32 theX, GExL::Int32 theY, std::string theText);
   entityx::Entity SpawnBackdrop(GExL::Int32 theX, GExL::Int32 theY, sf::Texture& theTexture);
   entityx::Entity SpawnPrimalObject(GExL::Int32 theX, GExL::Int32 theY, sf::Texture& theTexture);
   entityx::Entity SpawnCharacter(GExL::Int32 theX, GExL::Int32 theY, sf::Texture& theTexture);

@@ -3,33 +3,34 @@
 #include <GExL/utils/String_types.hpp>
 #include "Application.hpp"
 #include "TextureAsset.hpp"
-DataParser::DataParser(Application& theApp, std::string theFilename) :
+DataParser::DataParser(Application& theApp) :
   mApp(theApp)
 {
-  mDoc.LoadFile(theFilename.c_str());
+  
 }
 
 bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theEntity)
 {
-
-  tinyxml2::XMLElement* anRoot = mDoc.FirstChildElement();
-  tinyxml2::XMLElement* anCat = anRoot->FirstChildElement("characters");
-  tinyxml2::XMLElement* anData = NULL;
-  tinyxml2::XMLElement* anComponent = NULL;
-  tinyxml2::XMLElement* anValue = NULL;
-
-  if (anCat != NULL)
+  std::string anFilename = "resources/Data/Characters/";
+  anFilename += theEntityname;
+  anFilename += ".xml";
+  tinyxml2::XMLDocument anDoc;
+  anDoc.LoadFile(anFilename.c_str());
+  if (anDoc.ErrorID()==tinyxml2::XML_NO_ERROR)
   {
-    anData = anCat->FirstChildElement(theEntityname.c_str());
-    //is this the correct entity.
-    if (anData!=NULL)
+    tinyxml2::XMLElement* anRoot = anDoc.FirstChildElement("character");
+    if (anRoot != NULL)
     {
+      tinyxml2::XMLElement* anData = NULL;
+      tinyxml2::XMLElement* anComponent = NULL;
+      tinyxml2::XMLElement* anValue = NULL;
+
       theEntity = mApp.mWorld.entities.create();
       theEntity.assign<EntityTransformable>();
-      anComponent = anData->FirstChildElement("physical");
+      anComponent = anRoot->FirstChildElement("physical");
       if (anComponent != NULL)
       {
-        entityx::ComponentHandle<EntityPhysical> anPhysical=theEntity.assign<EntityPhysical>();
+        entityx::ComponentHandle<EntityPhysical> anPhysical = theEntity.assign<EntityPhysical>();
         anPhysical->name = anComponent->FirstChildElement("name")->GetText();
         anPhysical->condition = GExL::FloatParser::ToValue(anComponent->FirstChildElement("condition")->GetText(), 100.0f);
         anPhysical->toughness = GExL::FloatParser::ToValue(anComponent->FirstChildElement("toughness")->GetText(), 100.0f);
@@ -38,15 +39,15 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
         anPhysical->size = GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("size")->GetText(), 1);
         anPhysical->destroyed = GExL::BoolParser::ToValue(anComponent->FirstChildElement("destroyed")->GetText(), false);
       }
-      anComponent = anData->FirstChildElement("alive");
+      anComponent = anRoot->FirstChildElement("alive");
       if (anComponent != NULL)
       {
-        tinyxml2::XMLElement* anStat,*anSkill;
+        tinyxml2::XMLElement* anStat, *anSkill;
         entityx::ComponentHandle<EntityAlive> anAlive = theEntity.assign<EntityAlive>();
         anAlive->health = GExL::FloatParser::ToValue(anComponent->FirstChildElement("health")->GetText(), 100.0f);
         anAlive->energy = GExL::FloatParser::ToValue(anComponent->FirstChildElement("energy")->GetText(), 100.0f);
         anValue = anComponent->FirstChildElement("behavior");
-        
+
         while (anValue != NULL)
         {
           std::string anBehavior = anValue->GetText();
@@ -60,7 +61,7 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
           }
           anValue = anValue->NextSiblingElement("behavior");
         }
-        anValue = anData->FirstChildElement("stats");
+        anValue = anRoot->FirstChildElement("stats");
 
         if (anValue != NULL)
         {
@@ -87,7 +88,7 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
             anStat = anStat->NextSiblingElement();
           }
         }
-        anValue = anData->FirstChildElement("skills");
+        anValue = anRoot->FirstChildElement("skills");
 
         if (anValue != NULL)
         {
@@ -105,7 +106,7 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
             }
             else if (anSkillName == "reflex")
             {
-              anAlive->skills.reflex= GExL::FloatParser::ToValue(anSkill->GetText(), 0.0f);
+              anAlive->skills.reflex = GExL::FloatParser::ToValue(anSkill->GetText(), 0.0f);
             }
             else if (anSkillName == "strength")
             {
@@ -143,12 +144,12 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
           }
         }
       }
-      anComponent = anData->FirstChildElement("mobile");
+      anComponent = anRoot->FirstChildElement("mobile");
       if (anComponent != NULL)
       {
         entityx::ComponentHandle<EntityMobile> anMobile = theEntity.assign<EntityMobile>();
         anMobile->speed = GExL::FloatParser::ToValue(anComponent->FirstChildElement("speed")->GetText(), 100.0f);
-        
+
         anValue = anComponent->FirstChildElement("type");
         while (anValue != NULL)
         {
@@ -163,18 +164,18 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
           anValue = anValue->NextSiblingElement("type");
         }
       }
-      anComponent = anData->FirstChildElement("render");
+      anComponent = anRoot->FirstChildElement("render");
       if (anComponent != NULL)
       {
         TextureAsset anTexture(mApp.mAssetManager, anComponent->FirstChildElement("texture")->GetText(), GExL::AssetLoadNow);
         entityx::ComponentHandle<EntityRender> anRender = theEntity.assign<EntityRender>(anTexture.GetAsset());
-        
-        GExL::Uint32 anIndex= GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("index")->GetText(), 0);
+
+        GExL::Uint32 anIndex = GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("index")->GetText(), 0);
         GExL::Uint32 anTilesPerRow = anTexture.GetAsset().getSize().x / Tilemap::TileSize;
         GExL::Uint32 anClipX = (anIndex) % anTilesPerRow;
         GExL::Uint32 anClipY = (anIndex) / anTilesPerRow;
         anRender->SetClipRect(anClipX*Tilemap::TileSize, anClipY*Tilemap::TileSize, Tilemap::TileSize, Tilemap::TileSize);
-        
+
       }
       return true;
     }

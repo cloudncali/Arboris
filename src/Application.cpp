@@ -7,7 +7,7 @@
 #include "TextureHandler.hpp"
 #include "MusicHandler.hpp"
 #include "StateManager.hpp"
-
+#include "MenuManager.hpp"
 #include "GameState.hpp"
 #include "TitleState.hpp"
 #include "ConsoleState.hpp"
@@ -26,7 +26,8 @@ Application::Application() :
   mPositionIterations(2),
   mConsoleFont(),
   mConsole(mConsoleFont),
-  mData(*this,"resources/Data/gamedata.xml")
+  mData(*this),
+  mMenuManager(*this)
 {
 }
 
@@ -84,8 +85,12 @@ void Application::init()
     mStateManager.SetNextState(STATE_GAME);
     //Entity World
     mWorld.systems.add<entityx::deps::Dependency<EntityRender, EntityTransformable>>();
-
+    mMenuManager.init();
   }
+  
+}
+void Application::initMenus()
+{
   
 }
 void Application::handleEvent(sf::Event theEvent)
@@ -97,6 +102,7 @@ void Application::handleEvent(sf::Event theEvent)
 	}
 	if (!mPaused)
 		mStateManager.handleEvent(theEvent);
+  mMenuManager.handleEvent(theEvent);
 }
 
 void Application::update(float theDeltaTime)
@@ -113,7 +119,7 @@ void Application::render()
   mWindow.clear(sf::Color::White);
   
   mStateManager.render();
-  
+  mMenuManager.render();
   mWindow.display();
 }
 

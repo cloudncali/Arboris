@@ -11,6 +11,8 @@
 #include "Console.hpp"
 #include "FontAsset.hpp"
 #include "DataParser.hpp"
+#include <TGUI/TGUI.hpp>
+#include "MenuManager.hpp"
 class Application
 {
 public:
@@ -33,8 +35,10 @@ public:
 	World mWorld;
   Console mConsole;
   DataParser mData;
+  MenuManager mMenuManager;
 protected:
 	virtual void init();
+  virtual void initMenus();
 	virtual void handleEvent(sf::Event theEvent);
 	virtual void update(float theDeltaTime);
 	virtual void render();
@@ -54,6 +58,7 @@ private:
 	bool bVSync;
 	GExL::FileLogger mLogger;
   sf::Font mConsoleFont;
+  
 };
 
 

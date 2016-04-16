@@ -28,6 +28,14 @@ void World::render() {
   systems.update<DebugRenderSystem>(0);
   
 }
+entityx::Entity World::CreatLabel(GExL::Int32 theX, GExL::Int32 theY, std::string theText)
+{
+  entityx::Entity anEntity = entities.create();
+  anEntity.assign<EntityTransformable>();
+  anEntity.component<EntityTransformable>()->setPosition(sf::Vector2f(static_cast<float>(theX), static_cast<float>(theY)));
+  
+  return anEntity;
+}
 entityx::Entity World::SpawnBackdrop(GExL::Int32 theX, GExL::Int32 theY, sf::Texture& theTexture)
 {
   entityx::Entity anEntity = entities.create();

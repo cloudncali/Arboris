@@ -19,6 +19,7 @@ void RenderSystem::update(entityx::EntityManager &es, entityx::EventManager &eve
     anRenderState.transform *= anTransform;
     mWindow.draw(anRender->mVertices, anRenderState);
   }
+
 };
 DebugRenderSystem::DebugRenderSystem(sf::RenderWindow& theWindow) :
   mWindow(theWindow)
@@ -195,20 +196,21 @@ void BehaviorSystem::update(entityx::EntityManager &es, entityx::EventManager &e
     anAlive = anEntity.component<EntityAlive>();
     anTransform = anEntity.component<EntityTransformable>();
     std::string anEntityName = anEntity.component<EntityPhysical>()->name;
+    sf::Vector2f anTargetPos;
     if (anAlive->behaviorFlags & BEHAVIOR_CONTROLLED)
     {
       while (!mKeyboardEventQueue.empty() && !mTurnOrder.empty())
       {
-        sf::Vector2f anTargetPos;
+        
         if (mKeyboardEventQueue.front().theKeyCode == sf::Keyboard::Left)
         {
-          anTargetPos.x = 1.0f;
+          anTargetPos.x = -1.0f;
           anTargetPos.y = 0.0f;
           anAction = true;
         }
         else if (mKeyboardEventQueue.front().theKeyCode == sf::Keyboard::Right)
         {
-          anTargetPos.x = -1.0f;
+          anTargetPos.x = 1.0f;
           anTargetPos.y = 0.0f;
           anAction = true;
         }
@@ -238,18 +240,7 @@ void BehaviorSystem::update(entityx::EntityManager &es, entityx::EventManager &e
           }
           anAction = true;
         }
-        if (anAction)
-        {
-          anTargetPos.x += anTransform->getPosition().x / Tilemap::TileSize;
-          anTargetPos.y += anTransform->getPosition().y / Tilemap::TileSize;
-          if (anAlive->behaviorFlags & BEHAVIOR_AGRESSIVE)
-          {
-            mApp.mWorld.events.emit<DamageEvent>(anEntity, anTargetPos, static_cast<GExL::Uint32>(DAMAGE_MELEE), 0.0f);
-          }
-          mApp.mWorld.events.emit<MovementEvent>(anEntity, anTargetPos, MOVEMENT_WALK_BI);
-          mTurnOrder.pop();
-          mKeyboardEventQueue.pop();
-        }
+        mKeyboardEventQueue.pop();
       }
     }
     else if (anAlive->behaviorFlags & BEHAVIOR_WANDER)
@@ -257,21 +248,40 @@ void BehaviorSystem::update(entityx::EntityManager &es, entityx::EventManager &e
       GExL::Uint32 anDirection = GExL::random(0, 8);
       if (anDirection == 1)
       {
-        mApp.mWorld.events.emit<MovementEvent>(anEntity, sf::Vector2f(0.0f, -1.0f), MOVEMENT_WALK_BI);
+        anTargetPos.x = 0.0f;
+        anTargetPos.y = -1.0f;
+        anAction = true;
       }
       if (anDirection == 2)
       {
-        mApp.mWorld.events.emit<MovementEvent>(anEntity, sf::Vector2f(1.0f, 0.0f), MOVEMENT_WALK_BI);
+        anTargetPos.x = 1.0f;
+        anTargetPos.y = 0.0f;
+        anAction = true;
       }
       if (anDirection == 3)
       {
-        mApp.mWorld.events.emit<MovementEvent>(anEntity, sf::Vector2f(0.0f, 1.0f), MOVEMENT_WALK_BI);
+        anTargetPos.x = 0.0f;
+        anTargetPos.y = 1.0f;
+        anAction = true;
       }
       if (anDirection == 4)
       {
-        mApp.mWorld.events.emit<MovementEvent>(anEntity, sf::Vector2f(-1.0f, 0.0f), MOVEMENT_WALK_BI);
+        anTargetPos.x = -1.0f;
+        anTargetPos.y = 0.0f;
+        anAction = true;
       }
+    }
+    if (anAction)
+    {
+      anTargetPos.x += anTransform->getPosition().x / Tilemap::TileSize;
+      anTargetPos.y += anTransform->getPosition().y / Tilemap::TileSize;
+      if (anAlive->behaviorFlags & BEHAVIOR_AGRESSIVE)
+      {
+        //mApp.mWorld.events.emit<DamageEvent>(anEntity, anTargetPos, static_cast<GExL::Uint32>(DAMAGE_MELEE), 0.0f);
+      }
+      mApp.mWorld.events.emit<MovementEvent>(anEntity, anTargetPos, MOVEMENT_WALK_BI);
       mTurnOrder.pop();
+
     }
   }
   
