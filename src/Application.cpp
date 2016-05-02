@@ -63,7 +63,7 @@ void Application::init()
 {
 	mRunning = true;
 	//Init Logger
-		//Create window
+  //Create window
   mWindow.create(sf::VideoMode(800, 600), "RPG");
 	if (!mWindow.isOpen())
 	{
@@ -111,6 +111,7 @@ void Application::update(float theDeltaTime)
   {
 		mStateManager.update(theDeltaTime);
     mWorld.update(theDeltaTime);
+    mMenuManager.update(theDeltaTime);
   }
 }
 

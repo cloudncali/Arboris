@@ -20,11 +20,21 @@ public:
   void start();
   void stop();
   void SetTargetEntity(entityx::Entity theTargetEntity);
+  void CreateEntityMenu();
+  void CreateActionMenu();
+  void CloseEntityWindow();
+  void ShowActionMenu();
+  void HideActionMenu();
+
 private:
-  
   entityx::Entity mTargetEntity;
-  tgui::Gui mGUI;
   Application& mApp;
+  sf::View mMenuView;
+
+  tgui::Gui mGUI;
+  tgui::Panel::Ptr mActionMenu;
+  tgui::ChildWindow::Ptr mEntityWindow;
+  tgui::Theme::Ptr mTheme;
 };
 #endif
 

@@ -34,7 +34,7 @@ void GameState::handleEvent(sf::Event theEvent)
 {
   if (theEvent.type == sf::Event::KeyReleased)
   {
-    if (theEvent.key.code == sf::Keyboard::F12)
+    if (theEvent.key.code == sf::Keyboard::Tilde)
     {
       if (mApp.mStateManager.GetCurrentSubState() == STATE_NONE)
       {
@@ -43,6 +43,10 @@ void GameState::handleEvent(sf::Event theEvent)
     }
     KeyboardEvent anKeyboardEvent(theEvent);
     mApp.mWorld.events.emit<KeyboardEvent>(anKeyboardEvent);
+  }
+  if (theEvent.type == sf::Event::MouseButtonPressed)
+  {
+    mApp.mWorld.events.emit<MouseClickEvent>(MouseClickEvent(theEvent));
   }
 }
 void GameState::update(float theDeltaTime)

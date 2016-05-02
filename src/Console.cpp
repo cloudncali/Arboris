@@ -38,8 +38,10 @@ source distribution.
 namespace
 {
     const sf::Uint8 maxBufferLines = 24u;
+    const sf::Uint8 maxShortViewLines = 7u;
     const sf::Uint8 maxBufferLength = 100u;
-    const sf::Vector2f size(800.f, 200.f);
+    const sf::Vector2f size(800.f, 400.f);
+    const sf::Vector2f shortsize(800.f, 200.f);
     const float textOffset = 10.f;
     const std::string prompt(">");
     const std::string cursor("_");
@@ -482,8 +484,12 @@ void Console::updateText()
     m_bufferText.setString(prompt + m_commandBuffer + cursor);
     //update output buffer
     std::string output;
-    for (const auto& s : m_textBuffer)
+    if (m_show_command_buffer)
+    {
+      for (const auto& s : m_textBuffer)
         output += s + "\n";
+    }
+
     m_outputText.setString(output);
 }
 
@@ -502,4 +508,5 @@ void Console::setBackgroundColor(sf::Color theColor)
 void Console::showCommandBuffer(bool shown)
 {
   m_show_command_buffer = shown;
+  updateText();
 }

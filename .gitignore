@@ -26,3 +26,8 @@
 *.exe
 *.out
 *.app
+# Project Files
+*.opendb
+*.db
+/build
+/resources/Images/townactions.gif

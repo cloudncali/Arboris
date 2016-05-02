@@ -26,18 +26,18 @@ void ConsoleState::reinit()
 }
 void ConsoleState::handleEvent(sf::Event theEvent)
 {
-  if (theEvent.type == sf::Event::KeyReleased)
+  if (theEvent.key.code == sf::Keyboard::Tilde && theEvent.type == sf::Event::KeyReleased)
   {
-    if (theEvent.key.code == sf::Keyboard::F12)
+    if (mApp.mStateManager.GetCurrentSubState() == STATE_CONSOLE)
     {
-      if (mApp.mStateManager.GetCurrentSubState() == STATE_CONSOLE)
-      {
-        mApp.mStateManager.SetNextSubState(STATE_NONE);
-      }
+      mApp.mStateManager.SetNextSubState(STATE_NONE);
     }
+  }  
+  else
+  {
+    mApp.mConsole.handleEvent(theEvent);
+    mApp.mConsole.handleUIEvent(theEvent);
   }
-  mApp.mConsole.handleEvent(theEvent);
-  mApp.mConsole.handleUIEvent(theEvent);
 }
 void ConsoleState::update(float theDeltaTime)
 {

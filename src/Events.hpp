@@ -7,6 +7,16 @@ struct CollisionEvent {
 
   entityx::Entity left, right;
 };
+struct MouseClickEvent {
+  MouseClickEvent(sf::Event& theEvent) : mButton(theEvent.mouseButton.button), 
+    mPosition(sf::Vector2f(
+      static_cast<float>(theEvent.mouseButton.x), 
+      static_cast<float>(theEvent.mouseButton.y))
+      ) { }
+  
+  sf::Mouse::Button mButton;
+  sf::Vector2f mPosition;
+};
 struct DamageEvent {
   DamageEvent(entityx::Entity theSource,sf::Vector2f theTarget, GExL::Uint32 theType, float thePower) :
   source(theSource),

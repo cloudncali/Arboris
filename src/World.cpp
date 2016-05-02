@@ -3,7 +3,6 @@
 #include "World.hpp"
 #include "Components.hpp"
 #include "TextureAsset.hpp"
-#include "Box2dUtil.hpp"
 #include "Application.hpp"
 World::World(Application& theApp) :
   mWindow(theApp.mWindow),
@@ -11,7 +10,7 @@ World::World(Application& theApp) :
 {
   systems.add<BehaviorSystem>(theApp);
   systems.add<MovementSystem>(theApp.mWorld.mTileMap);
-  systems.add<CollisionSystem>(theApp.mWorld.mTileMap);
+  systems.add<CollisionSystem>(theApp);
   systems.add<CombatSystem>(theApp.mConsole);
   systems.add<RenderSystem>(theApp.mWindow);
   systems.add<DebugRenderSystem>(theApp.mWindow);

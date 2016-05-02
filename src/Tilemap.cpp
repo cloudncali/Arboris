@@ -86,7 +86,26 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
     anTileIndex = 0;
     anLayerIndex++;
   }
-  
+  entityx::Entity anEntity;
+  for (auto it = theMapData.objectGroupCollection.begin(); it != theMapData.objectGroupCollection.end(); ++it)
+  {
+    for (auto it2 = it->objects.begin(); it2 != it->objects.end(); ++it2)
+    {
+      if (GExL::StringToLowercase(it2->type) == "character")
+      {
+        if (it2->propertyMap.find("characterdata") != it2->propertyMap.end())
+        {
+          anEntity = mApp.mWorld.entities.create();
+          mApp.mData.ParseCharacter(it2->propertyMap["characterdata"], anEntity);
+          anEntity.component<EntityTransformable>()->setPosition(sf::Vector2f(it2->x, it2->y));
+          ParseCharacterData(anEntity, it2->propertyMap);
+        }
+      }
+    }
+    anTileIndex = 0;
+    anLayerIndex++;
+  }
+
 }
 bool Tilemap::TestTileFlag(sf::Vector3f theTile, GExL::Uint32 theFlag)
 {
@@ -119,6 +138,35 @@ void Tilemap::SetTileLayerFlag(GExL::Uint32 theLayer, GExL::Uint32 theFlag)
       {
         mTileFlags[theLayer][anTileY][anTileX] = theFlag;
       }
+    }
+  }
+}
+void Tilemap::ParseCharacterData(entityx::Entity theCharacter, tmxparser::TmxPropertyMap_t theData)
+{
+  
+
+  //Parse for characterFlags
+  if (theData.find("controlled") != theData.end())
+  {
+    if (GExL::BoolParser::ToValue(theData["controlled"], false))
+    {
+      theCharacter.component<EntityAlive>()->behaviorFlags |= BEHAVIOR_CONTROLLED;
+    }
+    else
+    {
+      theCharacter.component<EntityAlive>()->behaviorFlags &= BEHAVIOR_CONTROLLED;
+    }
+  }
+
+  if (theData.find("wander") != theData.end())
+  {
+    if (GExL::BoolParser::ToValue(theData["wander"], false))
+    {
+      theCharacter.component<EntityAlive>()->behaviorFlags |= BEHAVIOR_WANDER;
+    }
+    else
+    {
+      theCharacter.component<EntityAlive>()->behaviorFlags &= BEHAVIOR_WANDER;
     }
   }
 }

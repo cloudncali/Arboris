@@ -4,6 +4,7 @@
 #include "RPG_types.hpp"
 #include "tmxparser.h"
 #include <GExL/container/TArray3D.hpp>
+#include <entityx\entityx.h>
 class Tilemap
 {
 public:
@@ -24,6 +25,7 @@ public:
   void SetTileFlag(sf::Vector3i theTile, GExL::Uint32 theFlag);
   void SetTileLayerFlag(GExL::Uint32 theLayer, GExL::Uint32 theFlag);
 private:
+  void ParseCharacterData(entityx::Entity theCharacter, tmxparser::TmxPropertyMap_t theData);
   GExL::TArray3D<GExL::Uint32> mTileFlags;
   Application &mApp;
 };

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="5">
  <properties>
   <property name="tiletexture" value="resources/Images/DungeonTiles.gif"/>
  </properties>
@@ -389,4 +389,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Characters">
+  <object id="1" name="Mage" type="character" x="257" y="128" width="32" height="32">
+   <properties>
+    <property name="characterdata" value="mage01"/>
+    <property name="controlled" value="true"/>
+   </properties>
+  </object>
+  <object id="3" x="319" y="426" width="1"/>
+ </objectgroup>
 </map>
