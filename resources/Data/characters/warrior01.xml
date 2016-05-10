@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <character>
 	<physical>      
-	  <name>Mage</name>
+	  <name>Warrior</name>
 		<condition> 10.0 </condition>
 		<toughness> 0.0 </toughness>
 		<blocking> true </blocking>
@@ -14,18 +14,18 @@
 		<energy>100.0f</energy>
 		<behavior>wander</behavior>
 		<stats>
-			<phys>1 </phys>
-			<intel> 4 </intel>
-			<wit>3</wit>
+			<phys>3 </phys>
+			<intel> 1 </intel>
+			<wit>2</wit>
 			<luck>2</luck>
 		</stats>
 		<skills>
-			<combat>1 </combat>
+			<combat>3 </combat>
 			<stealth> 1 </stealth>
-			<reflex>1</reflex>
-			<strength>1</strength>
-			<fortitude>1</fortitude>
-			<magic>3</magic>
+			<reflex>2</reflex>
+			<strength>3</strength>
+			<fortitude>2</fortitude>
+			<magic>1</magic>
 			<lore>1</lore>
 			<willpower>1</willpower>
 			<charisma>1</charisma>
@@ -39,7 +39,7 @@
 	</mobile>
 	<render>
 		<texture>resources/Images/CharacterTiles.png </texture>
-		<index> 1 </index>
+		<index>35 </index>
 	</render>
 </character>
 	

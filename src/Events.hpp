@@ -29,6 +29,18 @@ struct DamageEvent {
   GExL::Uint32 type;
   float power;
 };
+struct AttackEvent {
+  AttackEvent(entityx::Entity theSource, entityx::Entity theTarget, GExL::Uint32 theType, float thePower) :
+    source(theSource),
+    target(theTarget),
+    type(theType),
+    power(thePower)
+  {}
+  entityx::Entity source;
+  entityx::Entity target;
+  GExL::Uint32 type;
+  float power;
+};
 struct MovementEvent {
   MovementEvent(entityx::Entity theEntity, sf::Vector2f theTarget, GExL::Uint32 theType) :
     entity(theEntity),

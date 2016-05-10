@@ -2,8 +2,8 @@
 <character>
 	<physical>      
 	  <name>Orc Warrior</name>
-		<condition> 100.0 </condition>
-		<toughness> 4.0 </toughness>
+		<condition> 10.0 </condition>
+		<toughness> 0.0 </toughness>
 		<blocking> true </blocking>
 		<weight> 1.0 </weight>
 		<size> 1</size>

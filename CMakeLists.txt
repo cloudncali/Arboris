@@ -9,6 +9,11 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 set(INC
 	${SRCROOT}/RPG_types.hpp
 	${SRCROOT}/Components.hpp
+	${SRCROOT}/Components/Character.hpp
+	${SRCROOT}/Components/Drawable.hpp
+	${SRCROOT}/Components/MapObject.hpp
+	${SRCROOT}/Components/Movable.hpp
+	${SRCROOT}/Components/Transformable.hpp
 	${SRCROOT}/Application.hpp
 	${SRCROOT}/FontAsset.hpp
 	${SRCROOT}/FontHandler.hpp
@@ -22,6 +27,11 @@ set(INC
 	${SRCROOT}/ConsoleState.hpp
 	${SRCROOT}/TitleState.hpp
 	${SRCROOT}/Systems.hpp
+	${SRCROOT}/Systems/BehaviorSystem.hpp
+	${SRCROOT}/Systems/CollisionSystem.hpp
+	${SRCROOT}/Systems/CombatSystem.hpp
+	${SRCROOT}/Systems/MovementSystem.hpp
+	${SRCROOT}/Systems/RenderSystem.hpp
 	${SRCROOT}/World.hpp
 	${SRCROOT}/base64.h
 	${SRCROOT}/tinyxml2.h
@@ -51,7 +61,11 @@ set(SRC
 	${SRCROOT}/GameState.cpp
 	${SRCROOT}/ConsoleState.cpp
 	${SRCROOT}/TitleState.cpp
-	${SRCROOT}/Systems.cpp
+	${SRCROOT}/Systems/BehaviorSystem.cpp
+	${SRCROOT}/Systems/CollisionSystem.cpp
+	${SRCROOT}/Systems/CombatSystem.cpp
+	${SRCROOT}/Systems/MovementSystem.cpp
+	${SRCROOT}/Systems/RenderSystem.cpp
 	${SRCROOT}/World.cpp
 	${SRCROOT}/base64.cpp
 	${SRCROOT}/Console.cpp

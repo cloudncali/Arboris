@@ -26,25 +26,24 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
       tinyxml2::XMLElement* anValue = NULL;
 
       theEntity = mApp.mWorld.entities.create();
-      theEntity.assign<EntityTransformable>();
+      theEntity.assign<c::Transformable>();
       anComponent = anRoot->FirstChildElement("physical");
       if (anComponent != NULL)
       {
-        entityx::ComponentHandle<EntityPhysical> anPhysical = theEntity.assign<EntityPhysical>();
-        anPhysical->name = anComponent->FirstChildElement("name")->GetText();
-        anPhysical->condition = GExL::FloatParser::ToValue(anComponent->FirstChildElement("condition")->GetText(), 100.0f);
-        anPhysical->toughness = GExL::FloatParser::ToValue(anComponent->FirstChildElement("toughness")->GetText(), 100.0f);
-        anPhysical->blocking = GExL::BoolParser::ToValue(anComponent->FirstChildElement("blocking")->GetText(), true);
-        anPhysical->weight = GExL::FloatParser::ToValue(anComponent->FirstChildElement("weight")->GetText(), 1.0f);
-        anPhysical->size = GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("size")->GetText(), 1);
-        anPhysical->destroyed = GExL::BoolParser::ToValue(anComponent->FirstChildElement("destroyed")->GetText(), false);
+        entityx::ComponentHandle<c::MapObject> anMapObject = theEntity.assign<c::MapObject>();
+        anMapObject->name = anComponent->FirstChildElement("name")->GetText();
+        anMapObject->health = GExL::FloatParser::ToValue(anComponent->FirstChildElement("condition")->GetText(), 100.0f);
+        anMapObject->defense = GExL::FloatParser::ToValue(anComponent->FirstChildElement("toughness")->GetText(), 100.0f);
+        anMapObject->blocking = GExL::BoolParser::ToValue(anComponent->FirstChildElement("blocking")->GetText(), true);
+        anMapObject->weight = GExL::FloatParser::ToValue(anComponent->FirstChildElement("weight")->GetText(), 1.0f);
+        anMapObject->size = GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("size")->GetText(), 1);
+        anMapObject->destroyed = GExL::BoolParser::ToValue(anComponent->FirstChildElement("destroyed")->GetText(), false);
       }
       anComponent = anRoot->FirstChildElement("alive");
       if (anComponent != NULL)
       {
         tinyxml2::XMLElement* anStat, *anSkill;
-        entityx::ComponentHandle<EntityAlive> anAlive = theEntity.assign<EntityAlive>();
-        anAlive->health = GExL::FloatParser::ToValue(anComponent->FirstChildElement("health")->GetText(), 100.0f);
+        entityx::ComponentHandle<c::Character> anAlive = theEntity.assign<c::Character>();
         anAlive->energy = GExL::FloatParser::ToValue(anComponent->FirstChildElement("energy")->GetText(), 100.0f);
         anValue = anComponent->FirstChildElement("behavior");
 
@@ -147,7 +146,7 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
       anComponent = anRoot->FirstChildElement("mobile");
       if (anComponent != NULL)
       {
-        entityx::ComponentHandle<EntityMobile> anMobile = theEntity.assign<EntityMobile>();
+        entityx::ComponentHandle<c::Movable> anMobile = theEntity.assign<c::Movable>();
         anMobile->speed = GExL::FloatParser::ToValue(anComponent->FirstChildElement("speed")->GetText(), 100.0f);
 
         anValue = anComponent->FirstChildElement("type");
@@ -168,13 +167,16 @@ bool DataParser::ParseCharacter(std::string theEntityname, entityx::Entity& theE
       if (anComponent != NULL)
       {
         TextureAsset anTexture(mApp.mAssetManager, anComponent->FirstChildElement("texture")->GetText(), GExL::AssetLoadNow);
-        entityx::ComponentHandle<EntityRender> anRender = theEntity.assign<EntityRender>(anTexture.GetAsset());
+        entityx::ComponentHandle<c::Drawable> anDrawable = theEntity.assign<c::Drawable>(anTexture.GetAsset());
 
         GExL::Uint32 anIndex = GExL::Uint32Parser::ToValue(anComponent->FirstChildElement("index")->GetText(), 0);
         GExL::Uint32 anTilesPerRow = anTexture.GetAsset().getSize().x / Tilemap::TileSize;
         GExL::Uint32 anClipX = (anIndex) % anTilesPerRow;
         GExL::Uint32 anClipY = (anIndex) / anTilesPerRow;
-        anRender->SetClipRect(anClipX*Tilemap::TileSize, anClipY*Tilemap::TileSize, Tilemap::TileSize, Tilemap::TileSize);
+        anDrawable->SetClipRect(sf::IntRect(anClipX*Tilemap::TileSize,
+            anClipY*Tilemap::TileSize,
+            Tilemap::TileSize,
+            Tilemap::TileSize));
 
       }
       return true;

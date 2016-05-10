@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <character>
 	<physical>      
-	  <name>Mage</name>
+	  <name>Villager</name>
 		<condition> 10.0 </condition>
 		<toughness> 0.0 </toughness>
 		<blocking> true </blocking>
@@ -14,21 +14,21 @@
 		<energy>100.0f</energy>
 		<behavior>wander</behavior>
 		<stats>
-			<phys>1 </phys>
-			<intel> 4 </intel>
-			<wit>3</wit>
-			<luck>2</luck>
+			<phys>2 </phys>
+			<intel> 1 </intel>
+			<wit>1</wit>
+			<luck>1</luck>
 		</stats>
 		<skills>
-			<combat>1 </combat>
-			<stealth> 1 </stealth>
+			<combat>0 </combat>
+			<stealth> 0 </stealth>
 			<reflex>1</reflex>
 			<strength>1</strength>
 			<fortitude>1</fortitude>
-			<magic>3</magic>
-			<lore>1</lore>
-			<willpower>1</willpower>
-			<charisma>1</charisma>
+			<magic>0</magic>
+			<lore>0</lore>
+			<willpower>0</willpower>
+			<charisma>0</charisma>
 			<craft>1</craft>
 			<perception>1</perception>
 		</skills>
@@ -38,8 +38,8 @@
 		<speed>1</speed>
 	</mobile>
 	<render>
-		<texture>resources/Images/CharacterTiles.png </texture>
-		<index> 1 </index>
+		<texture>resources/Images/VillagerTiles.gif</texture>
+		<index>1 </index>
 	</render>
 </character>
 	

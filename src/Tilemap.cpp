@@ -28,7 +28,7 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
   const GExL::Uint32 anMapWidth = theMapData.width;
   const GExL::Uint32 anMapHeight = theMapData.height;
 
-  GExL::TArray3D<entityx::Entity> anChunkArray(theMapData.layerCollection.size() + 1,anMapHeight / ChunkSize + 1, anMapWidth / ChunkSize + 1);
+  GExL::TArray3D<entityx::Entity> anChunkArray(theMapData.layerCollection.size() + 1, anMapHeight / ChunkSize + 1, anMapWidth / ChunkSize + 1);
   for (GExL::Uint32 anLayer = 0; anLayer < anChunkArray.levels(); ++anLayer)
   {
     for (GExL::Uint32 anChunkY = 0; anChunkY < anChunkArray.rows(); ++anChunkY)
@@ -36,12 +36,12 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
       for (GExL::Uint32 anChunkX = 0; anChunkX < anChunkArray.columns(); ++anChunkX)
       {
         anChunkArray[anLayer][anChunkY][anChunkX] = mApp.mWorld.entities.create();
-        anChunkArray[anLayer][anChunkY][anChunkX].assign<EntityTransformable>();
+        anChunkArray[anLayer][anChunkY][anChunkX].assign<c::Transformable>();
 
-        anChunkArray[anLayer][anChunkY][anChunkX].assign<EntityRender>(anTexture);
-        entityx::ComponentHandle<EntityTransformable> anTransform = anChunkArray[anLayer][anChunkY][anChunkX].component<EntityTransformable>();
-        entityx::ComponentHandle<EntityRender> anRender = anChunkArray[anLayer][anChunkY][anChunkX].component<EntityRender>();
-        anTransform->setPosition(sf::Vector2f(static_cast<float>( anChunkX * TileSize * ChunkSize), static_cast<float>(anChunkY * TileSize * ChunkSize)));
+        anChunkArray[anLayer][anChunkY][anChunkX].assign<c::Drawable>(anTexture);
+        entityx::ComponentHandle<c::Transformable> anTransform = anChunkArray[anLayer][anChunkY][anChunkX].component<c::Transformable>();
+        entityx::ComponentHandle<c::Drawable> anRender = anChunkArray[anLayer][anChunkY][anChunkX].component<c::Drawable>();
+        anTransform->setPosition(sf::Vector2f(static_cast<float>(anChunkX * TileSize * ChunkSize), static_cast<float>(anChunkY * TileSize * ChunkSize)));
 
         anRender->mVertices.clear();
         anRender->mVertices.setPrimitiveType(sf::Quads);
@@ -66,7 +66,7 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
         GExL::Uint32 anChunkY = anTileDestY / ChunkSize;
         sf::Vector2f anFinalPos = sf::Vector2f((static_cast<float>(anTileDestX - (anChunkX * ChunkSize)) * TileSize),
           static_cast<float>((anTileDestY - (anChunkY * ChunkSize)) * TileSize));
-        entityx::ComponentHandle<EntityRender> anRender = anChunkArray[anLayerIndex][anChunkY][anChunkX].component<EntityRender>();
+        entityx::ComponentHandle<c::Drawable> anRender = anChunkArray[anLayerIndex][anChunkY][anChunkX].component<c::Drawable>();
         anRender->mVertices.append(sf::Vertex(anFinalPos,
           sf::Vector2f(static_cast<float>(anTileSourceX * TileSize), static_cast<float>(anTileSourceY * TileSize))));
         anRender->mVertices.append(sf::Vertex(anFinalPos + sf::Vector2f(static_cast<float>(TileSize), 0.0f),
@@ -76,7 +76,7 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
         anRender->mVertices.append(sf::Vertex(anFinalPos + sf::Vector2f(0.0f, static_cast<float>(TileSize)),
           sf::Vector2f(static_cast<float>(anTileSourceX * TileSize), static_cast<float>(anTileSourceY * TileSize)) + sf::Vector2f(0.0f, TileSize)));
         mTileFlags[0][anTileDestY / TileSize][anTileDestX / TileSize] = TILE_NONE;
-        if(theMapData.tilesetCollection.at(it2->tilesetIndex).tileDefinitions[anTileGID].propertyMap["blocking"]==GExL::BoolParser::ToString(true))
+        if (theMapData.tilesetCollection.at(it2->tilesetIndex).tileDefinitions[anTileGID].propertyMap["blocking"] == GExL::BoolParser::ToString(true))
         {
           mTileFlags[0][anTileDestY][anTileDestX] |= TILE_BLOCKED;
         }
@@ -97,7 +97,7 @@ void Tilemap::ParseMap(tmxparser::TmxMap& theMapData)
         {
           anEntity = mApp.mWorld.entities.create();
           mApp.mData.ParseCharacter(it2->propertyMap["characterdata"], anEntity);
-          anEntity.component<EntityTransformable>()->setPosition(sf::Vector2f(it2->x, it2->y));
+          anEntity.component<c::Transformable>()->setPosition(sf::Vector2f(it2->x, it2->y));
           ParseCharacterData(anEntity, it2->propertyMap);
         }
       }
@@ -150,11 +150,12 @@ void Tilemap::ParseCharacterData(entityx::Entity theCharacter, tmxparser::TmxPro
   {
     if (GExL::BoolParser::ToValue(theData["controlled"], false))
     {
-      theCharacter.component<EntityAlive>()->behaviorFlags |= BEHAVIOR_CONTROLLED;
+      theCharacter.component<c::Character>()->behaviorFlags |= BEHAVIOR_CONTROLLED;
+      mApp.mMenuManager.SetPlayerEntity(theCharacter);
     }
     else
     {
-      theCharacter.component<EntityAlive>()->behaviorFlags &= BEHAVIOR_CONTROLLED;
+      theCharacter.component<c::Character>()->behaviorFlags &= BEHAVIOR_CONTROLLED;
     }
   }
 
@@ -162,11 +163,11 @@ void Tilemap::ParseCharacterData(entityx::Entity theCharacter, tmxparser::TmxPro
   {
     if (GExL::BoolParser::ToValue(theData["wander"], false))
     {
-      theCharacter.component<EntityAlive>()->behaviorFlags |= BEHAVIOR_WANDER;
+      theCharacter.component<c::Character>()->behaviorFlags |= BEHAVIOR_WANDER;
     }
     else
     {
-      theCharacter.component<EntityAlive>()->behaviorFlags &= BEHAVIOR_WANDER;
+      theCharacter.component<c::Character>()->behaviorFlags &= BEHAVIOR_WANDER;
     }
   }
 }

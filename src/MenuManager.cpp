@@ -20,6 +20,7 @@ void MenuManager::init()
   mGUI.setFont(MenuFont.GetAsset());
   mTheme= std::make_shared<tgui::Theme>("resources/Images/GUITheme.txt");
   CreateActionMenu();
+  CreateHUD();
 }
 void MenuManager::reinit()
 {
@@ -32,37 +33,44 @@ void MenuManager::update(float theDeltaTime)
 {
   if (mTargetEntity.valid())
   {
-    if (mTargetEntity.has_component<EntityPhysical>())
+    if (mTargetEntity.has_component<c::MapObject>())
     {
       tgui::Label::Ptr anName, anCon, anToughness, anPhys, anWit, anIntel;
-      if (mEntityWindow != NULL)
+      tgui::ChildWindow::Ptr anEntityWindow = mGUI.get<tgui::ChildWindow>("EntityWindow");
+      if (anEntityWindow!=nullptr)
       {
-        mEntityWindow->show();
-        anName = mEntityWindow->get<tgui::Label>("NameLabel");
-        anCon = mEntityWindow->get<tgui::Label>("ConLabel", true);
-        anToughness = mEntityWindow->get<tgui::Label>("ToughnessLabel", true);
-        entityx::ComponentHandle<EntityPhysical> anPhysical = mTargetEntity.component<EntityPhysical>();
-        entityx::ComponentHandle<EntityTransformable> anTransform = mTargetEntity.component<EntityTransformable>();
-        anName->setText(anPhysical->name);
-        anCon->setText(GExL::FloatParser::ToString(anPhysical->condition));
-        anToughness->setText(GExL::FloatParser::ToString(anPhysical->toughness));
-        
-      }
-      if (mActionMenu != NULL)
-      {
-        entityx::ComponentHandle<EntityPhysical> anPhysical = mTargetEntity.component<EntityPhysical>();
-        entityx::ComponentHandle<EntityTransformable> anTransform = mTargetEntity.component<EntityTransformable>();
-        sf::Vector2f anPosition = anTransform->getPosition();
-        anPosition.x -= 30;
-        anPosition.y -= 75-((anPhysical->size*32)/2);
-        mActionMenu->setPosition(anPosition);
+        anEntityWindow->show();
+        anName = anEntityWindow->get<tgui::Label>("NameLabel");
+        anCon = anEntityWindow->get<tgui::Label>("ConLabel", true);
+        anToughness = anEntityWindow->get<tgui::Label>("ToughnessLabel", true);
+        entityx::ComponentHandle<c::MapObject> anMapObject = mTargetEntity.component<c::MapObject>();
+        entityx::ComponentHandle<c::Transformable> anTransform = mTargetEntity.component<c::Transformable>();
+        anName->setText(anMapObject->name);
+        std::stringstream anConText;
+        anConText << "HP: " << GExL::FloatParser::ToString(static_cast<GExL::Int32>(anMapObject->health));
+        anCon->setText(anConText.str());
+        std::stringstream anToughText;
+        anToughText << "DEF: " << GExL::FloatParser::ToString(static_cast<GExL::Int32>(anMapObject->defense));
+        anToughness->setText(anToughText.str());
+
       }
     }
   }
 }
 void MenuManager::render()
 {
+  if (mTargetEntity != NULL)
+  {
+    sf::RectangleShape anTarget;
+    anTarget.setPosition(mTargetEntity.component<c::Transformable>()->getPosition());
+    anTarget.setSize(sf::Vector2f(32, 32));
+    anTarget.setOutlineColor(sf::Color::Red);
+    anTarget.setFillColor(sf::Color::Transparent);
+    anTarget.setOutlineThickness(3);
+    mApp.mWindow.draw(anTarget);
+  }
   mGUI.draw();
+  
 }
 void MenuManager::start()
 {
@@ -75,15 +83,51 @@ void MenuManager::stop()
 void MenuManager::SetTargetEntity(entityx::Entity theTargetEntity)
 {
   mTargetEntity = theTargetEntity;
- 
-  ShowActionMenu();
 
+}
+void MenuManager::SetPlayerEntity(entityx::Entity thePlayerEntity)
+{
+  mPlayerEntity = thePlayerEntity;
 }
 void MenuManager::CreateEntityMenu()
 {
-    mEntityWindow = mTheme->load("ChildWindow");
-    mEntityWindow->setPosition(10, 10);
-    mEntityWindow->setSize(200, 300);
+  tgui::ChildWindow::Ptr anEntityWindow = mGUI.get<tgui::ChildWindow>("EntityWindow");
+  if (anEntityWindow == NULL)
+  {
+    anEntityWindow = mTheme->load("ChildWindow");
+    anEntityWindow->setPosition(10, 10);
+    anEntityWindow->setSize(200, 100);
+
+      tgui::Label::Ptr anNameLabel = mTheme->load("Label");
+      anNameLabel->setTextSize(26);
+      anNameLabel->setText("Name");
+      anNameLabel->setPosition(0, 0);
+
+      tgui::Label::Ptr anConLabel = mTheme->load("Label");
+      anConLabel->setTextSize(24);
+      anConLabel->setText("HP: 0");
+      anConLabel->setPosition(5, 30);
+      anEntityWindow->add(anConLabel, "ConLabel");
+
+      tgui::Label::Ptr anToughnessLabel = mTheme->load("Label");
+      anToughnessLabel->setTextSize(24);
+      anToughnessLabel->setText("Def: 0");
+      anToughnessLabel->setPosition(5, 60);
+      anEntityWindow->add(anToughnessLabel, "ToughnessLabel");
+
+      anEntityWindow->add(anNameLabel, "NameLabel");
+
+      mGUI.add(anEntityWindow, "EntityWindow");
+    }
+}
+void MenuManager::CreateCharacterMenu()
+{
+  tgui::ChildWindow::Ptr anEntityWindow = mGUI.get<tgui::ChildWindow>("EntityWindow");
+  if (anEntityWindow == NULL)
+  {
+    anEntityWindow = mTheme->load("ChildWindow");
+    anEntityWindow->setPosition(10, 10);
+    anEntityWindow->setSize(200, 100);
 
     tgui::Label::Ptr anNameLabel = mTheme->load("Label");
     anNameLabel->setTextSize(26);
@@ -96,13 +140,13 @@ void MenuManager::CreateEntityMenu()
 
     tgui::Label::Ptr anConLabel = mTheme->load("Label");
     anConLabel->setTextSize(24);
-    anConLabel->setText("Con");
+    anConLabel->setText("HP: 000");
     anConLabel->setPosition(0, 0);
     anVitalLayout->add(anConLabel, "ConLabel");
 
     tgui::Label::Ptr anToughnessLabel = mTheme->load("Label");
     anToughnessLabel->setTextSize(24);
-    anToughnessLabel->setText("T");
+    anToughnessLabel->setText("Def: 00");
     anToughnessLabel->setPosition(32, 0);
     anVitalLayout->add(anToughnessLabel, "ToughnessLabel");
 
@@ -121,45 +165,55 @@ void MenuManager::CreateEntityMenu()
     tgui::Label::Ptr anWitLabel = mTheme->load("Label");
     anWitLabel->setTextSize(20);
     anStatsLayout->add(anWitLabel);
-    tgui::Button::Ptr anCloseButton= mTheme->load("ChildWindowCloseButton");
-    anCloseButton->connect("pressed", &MenuManager::CloseEntityWindow, this);
-    mEntityWindow->setCloseButton(anCloseButton);
+    anEntityWindow->add(anNameLabel, "NameLabel");
+    anEntityWindow->add(anVitalLayout, "VitalLayout");
+    anEntityWindow->add(anStatsLayout, "StatsLayout");
 
-    mEntityWindow->add(anNameLabel, "NameLabel");
-    mEntityWindow->add(anVitalLayout, "VitalLayout");
-    mEntityWindow->add(anStatsLayout, "StatsLayout");
-
-    mGUI.add(mEntityWindow, "EntityWindow");
+    mGUI.add(anEntityWindow, "EntityWindow");
 
     mActionMenu->hide();
+  }
 }
 void MenuManager::CreateActionMenu()
 {
   if (mActionMenu == NULL)
   {
-    mActionMenu = std::make_shared<tgui::Panel>();
-    mActionMenu->setPosition(0, 0);
-    mActionMenu->setSize(150, 150);
+    mActionMenu = mTheme->load("Panel");
+    mActionMenu->setPosition(0, 460);
+    mActionMenu->setSize(600,40);
 
-    mActionMenu->setBackgroundColor(tgui::Color(0, 0, 0, 100));
     tgui::Button::Ptr anLookButton = mTheme->load("Button");
     mActionMenu->add(anLookButton, "LookButton");
-    anLookButton->setPosition(70, 0);
+    anLookButton->setPosition(0, 0);
     anLookButton->setSize(60, 40);
     anLookButton->setText("Look");
     anLookButton->connect("pressed", &MenuManager::CreateEntityMenu,this);
-    tgui::Button::Ptr anCancelButton = mTheme->load("Button");
-    mActionMenu->add(anCancelButton, "CancelButton");
-    anCancelButton->setPosition(80, 45);
-    anCancelButton->setSize(60, 40);
-    anCancelButton->setText("Cancel");
-    anCancelButton->connect("pressed", &MenuManager::HideActionMenu, this);
+    tgui::Button::Ptr anTalkButton = mTheme->load("Button");
+    mActionMenu->add(anTalkButton, "TalkButton");
+    anTalkButton->setPosition(60, 0);
+    anTalkButton->setSize(60, 40);
+    anTalkButton->setText("Talk");
+    tgui::Button::Ptr anAttackButton = mTheme->load("Button");
+    mActionMenu->add(anAttackButton, "AttackButton");
+    anAttackButton->setPosition(120, 0);
+    anAttackButton->setSize(60, 40);
+    anAttackButton->setText("Attack");
+    anAttackButton->connect("pressed", &MenuManager::Attack, this);
     mGUI.add(mActionMenu, "ActionMenu");
+
   }
 }
-void MenuManager::CloseEntityWindow()
+void MenuManager::CreateHUD()
 {
-  mEntityWindow->hide();
+  tgui::ListBox::Ptr anCombatLogList = mTheme->load("ListBox");
+  anCombatLogList->setPosition(0, 500);
+  anCombatLogList->setSize(600, 100);
+  mGUI.add(anCombatLogList, "CombatLog");
+
+  tgui::Panel::Ptr anCharacterScreen=mTheme->load("Panel");
+  anCharacterScreen->setPosition(600, 0);
+  anCharacterScreen->setSize(200, 600);
+  mGUI.add(anCharacterScreen, "CharacterScreen");
 }
 void MenuManager::ShowActionMenu()
 {
@@ -168,4 +222,17 @@ void MenuManager::ShowActionMenu()
 void MenuManager::HideActionMenu()
 {
   mActionMenu->hide();
+}
+void MenuManager::Attack()
+{
+  if(mTargetEntity!=NULL)
+  {
+    mApp.mWorld.events.emit<AttackEvent>(AttackEvent(mPlayerEntity, mTargetEntity, DAMAGE_MELEE, 10));
+  }
+  
+}
+void MenuManager::Log(std::string theMessage)
+{
+  tgui::ListBox::Ptr anCombatLogList = mGUI.get<tgui::ListBox>("CombatLog");
+  anCombatLogList->addItem(theMessage);
 }

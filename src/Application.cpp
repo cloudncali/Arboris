@@ -22,8 +22,6 @@ Application::Application() :
   mLogger("output.txt", true),
   mWorld(*this),
   mTimestep(1.0f / 60.0f),
-  mVelocityIterations(6),
-  mPositionIterations(2),
   mConsoleFont(),
   mConsole(mConsoleFont),
   mData(*this),
@@ -83,8 +81,10 @@ void Application::init()
     mStateManager.RegisterState(STATE_CONSOLE, new ConsoleState(*this));
     //Start Up State.
     mStateManager.SetNextState(STATE_GAME);
-    //Entity World
-    mWorld.systems.add<entityx::deps::Dependency<EntityRender, EntityTransformable>>();
+    //Entity World dependencies
+    mWorld.systems.add<entityx::deps::Dependency<c::Drawable, c::Transformable>>();
+    mWorld.systems.add<entityx::deps::Dependency<c::Character, c::MapObject>>();
+
     mMenuManager.init();
   }
   
@@ -100,9 +100,11 @@ void Application::handleEvent(sf::Event theEvent)
 	{
 		mRunning = false;
 	}
-	if (!mPaused)
-		mStateManager.handleEvent(theEvent);
-  mMenuManager.handleEvent(theEvent);
+  if (!mPaused)
+  {
+    mStateManager.handleEvent(theEvent);
+    mMenuManager.handleEvent(theEvent);
+  }
 }
 
 void Application::update(float theDeltaTime)

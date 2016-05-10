@@ -81,8 +81,8 @@ void ConsoleState::RegisterConsoleCommands()
       {
         if (mApp.mData.ParseCharacter(anEntityLabel, anEntity))
         {
-          anEntity.component<EntityTransformable>()->setPosition(static_cast<float>(anX*Tilemap::TileSize), static_cast<float>(anY*Tilemap::TileSize));
-          anEntity.component<EntityAlive>()->behaviorFlags |= BEHAVIOR_CONTROLLED;
+          anEntity.component<c::Transformable>()->setPosition(static_cast<float>(anX*Tilemap::TileSize), static_cast<float>(anY*Tilemap::TileSize));
+          anEntity.component<c::Character>()->behaviorFlags |= BEHAVIOR_CONTROLLED;
         }
         else
         {
@@ -94,7 +94,7 @@ void ConsoleState::RegisterConsoleCommands()
       {
         if (mApp.mData.ParseCharacter(anEntityLabel, anEntity))
         {
-          anEntity.component<EntityTransformable>()->setPosition(static_cast<float>(anX*Tilemap::TileSize), static_cast<float>(anY*Tilemap::TileSize));
+          anEntity.component<c::Transformable>()->setPosition(static_cast<float>(anX*Tilemap::TileSize), static_cast<float>(anY*Tilemap::TileSize));
         }
         else
         {

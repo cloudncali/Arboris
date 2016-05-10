@@ -22,7 +22,7 @@ void GameState::init()
 	srand(GExL::Uint32(time(NULL)));
   mBackgroundImage.GetAsset().setRepeated(true);
   mTilesetImage.GetAsset().setSmooth(false);
-  tmxparser::parseFromFile("resources/Maps/testmap.tmx", &mMapAsset, "resources/Images");
+  tmxparser::parseFromFile("resources/Maps/Hayold.tmx", &mMapAsset, "resources/Images");
   mApp.mWorld.mTileMap.ParseMap(mMapAsset);
   mApp.mConsole.setBackgroundColor(sf::Color(0u, 0u, 0u, 0u));
   mApp.mConsole.show();

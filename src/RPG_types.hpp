@@ -2,6 +2,9 @@
 #define PLATFORMER_GRAB_TYPES_HPP_INCLUDED
 
 #include <GExL/GExL_types.hpp>
+#include <entityx/entityx.h>
+#include <GExL/container/TArray.hpp>
+#include <SFML/Graphics.hpp>
 enum STATES
 {
   STATE_NONE = 0,

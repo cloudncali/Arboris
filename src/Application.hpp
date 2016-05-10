@@ -30,7 +30,7 @@ public:
   //Managers
 	GExL::AssetManager mAssetManager;
 	//Temp Game class until state machine is done.
-  
+  //Primary classes
 	StateManager mStateManager;
 	World mWorld;
   Console mConsole;
@@ -53,8 +53,6 @@ private:
 	GExL::Uint32 mFPS;
 	GExL::Uint32 mTPF;
   float mTimestep;
-  GExL::Int32 mVelocityIterations;
-  GExL::Int32 mPositionIterations;
 	bool bVSync;
 	GExL::FileLogger mLogger;
   sf::Font mConsoleFont;
